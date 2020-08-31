@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: python -m http.server $PORT
+  web: bundle exec ruby main.rb -p $PORT -o 0.0.0.0
