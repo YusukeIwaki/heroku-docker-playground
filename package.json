@@ -1,0 +1,24 @@
+{
+  "name": "heroku-docker-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YusukeIwaki/heroku-docker-playground.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YusukeIwaki/heroku-docker-playground/issues"
+  },
+  "homepage": "https://github.com/YusukeIwaki/heroku-docker-playground#readme",
+  "dependencies": {
+    "puppeteer-core": "^5.2.1"
+  }
+}
