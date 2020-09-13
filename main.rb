@@ -1,36 +1,57 @@
 require 'sinatra'
+require 'securerandom'
 
 get '/' do
-  'browse /puppeteer?q=xxxx'
+  'browse /chrome?url=xxxx or /firefox?url=xxxx'
 end
-get '/puppeteer' do
-  if params['q']
+get '/chrome' do
+  if params['url']
     require 'puppeteer'
 
     options = {
+      product: 'chrome',
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executable_path: ENV['PUPPETEER_EXECUTABLE_PATH'],
+      executable_path: '/usr/bin/google-chrome',
     }
 
-    titles = []
+    image_name = "chrome-#{SecureRandom.hex(8)}.png"
     Puppeteer.launch(**options) do |browser|
-      page = browser.pages.first || browser.new_page
-      page.goto("https://www.google.com/")
-      page.click('input[name="q"]')
-      page.keyboard.type_text(params['q'])
-      await_all(
-        page.async_wait_for_navigation,
-        page.keyboard.async_press("Enter"),
-      )
-
-      titles = page.SS("#search h3").map do |item|
-        item.evaluate("a => a.textContent")
-      end
+      page = browser.new_page
+      page.viewport = Puppeteer::Viewport.new(width: 1280, height: 800)
+      page.goto(params['url'])
+      page.screenshot(path: "/tmp/#{image_name}")
+      page.close
     end
 
-    titles.join(",")
+    content_type 'image/png'
+    send_file("/tmp/#{image_name}")
   else
-    "browser with ?q=xxx"
+    "browser with ?url=xxx"
+  end
+end
+get '/firefox' do
+  if params['url']
+    require 'puppeteer'
+
+    options = {
+      product: 'firefox',
+      headless: true,
+      executable_path: '/usr/bin/firefox',
+    }
+
+    image_name = "firefox-#{SecureRandom.hex(9)}.png"
+    Puppeteer.launch(**options) do |browser|
+      page = browser.new_page
+      page.viewport = Puppeteer::Viewport.new(width: 1280, height: 800)
+      page.goto(params['url'])
+      page.screenshot(path: "/tmp/#{image_name}")
+      page.close
+    end
+
+    content_type 'image/png'
+    send_file("/tmp/#{image_name}")
+  else
+    "browser with ?url=xxx"
   end
 end

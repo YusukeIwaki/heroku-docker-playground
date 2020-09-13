@@ -12,16 +12,19 @@ RUN apt-get update \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/google-chrome-stable
-ENV PUPPETEER_PRODUCT chrome
+# Install Firefox Nightly
+RUN apt-get update \
+    && apt-get install -y libdbus-glib-1-2 libxt6 \
+    && wget -O nightly.tar.bz2 "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=linux64&lang=en-US" \
+    && tar xf nightly.tar.bz2 \
+    && ln -s $(pwd)/firefox/firefox /usr/bin/firefox
+
 
 RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
-    cmake \
-    nodejs && \
+    && \
     rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 RUN mkdir /app
